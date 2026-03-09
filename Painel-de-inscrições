@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel de Inscrições</title>
+
+  <style>
+    :root{
+      --bg0:#070A12;
+      --bg1:#0A1020;
+      --card:#0E1730;
+      --card2:#0C142A;
+      --stroke:rgba(255,255,255,.10);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.60);
+
+      --pink:#FF3EA5;
+      --yellow:#FFC233;
+
+      --radius:18px;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --glass: rgba(255,255,255,.04);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(255,62,165,.14), transparent 60%),
+        radial-gradient(900px 500px at 80% 10%, rgba(255,194,51,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    /* Top bar */
+    .topbar{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 28px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background: rgba(0,0,0,.12);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      letter-spacing:.04em;
+      font-weight:700;
+      text-transform:uppercase;
+      font-size:16px;
+    }
+    .brand .logo{
+      width:18px;height:18px;border-radius:6px;
+      background: linear-gradient(135deg, rgba(255,62,165,.9), rgba(255,194,51,.9));
+      box-shadow: 0 10px 30px rgba(255,62,165,.15);
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:#2BE06D;
+      box-shadow:0 0 0 6px rgba(43,224,109,.12);
+    }
+    .clock{
+      font-variant-numeric: tabular-nums;
+      color:rgba(255,255,255,.78);
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    /* Layout */
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:22px;
+      margin-top:18px;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Card */
+    .card{
+      position:relative;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      padding:22px 22px 18px 22px;
+      min-height: 220px;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(600px 220px at 20% 0%, rgba(255,62,165,.14), transparent 60%),
+        radial-gradient(520px 240px at 85% 0%, rgba(255,194,51,.10), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .card > *{ position:relative; }
+
+    .head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.80);
+      font-size:16px;
+    }
+    .badge{
+      width:28px;height:28px;border-radius:10px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .valueRow{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      margin: 14px 0 12px;
+    }
+    .value{
+      font-size:64px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .metaPill{
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:999px;
+      padding:8px 10px;
+      white-space:nowrap;
+    }
+
+    .progressLine{
+      margin-top:14px;
+    }
+    .progressTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .bar{
+      height:14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      transform: translateZ(0);
+      transition: width .6s ease;
+    }
+    .updated{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      color:rgba(255,255,255,.55);
+      font-size:12px;
+      font-weight:700;
+    }
+    .updated .clockIcon{
+      width:18px;height:18px;border-radius:9px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    /* Variants */
+    .pink .value{ color:var(--pink); }
+    .pink .fill{ background: linear-gradient(90deg, rgba(255,62,165,.95), rgba(255,62,165,.55)); }
+
+    .yellow .value{ color:var(--yellow); }
+    .yellow .fill{ background: linear-gradient(90deg, rgba(255,194,51,.95), rgba(255,194,51,.55)); }
+
+    /* Loading / error */
+    .hint{
+      margin-top:14px;
+      color: rgba(255,255,255,.55);
+      font-size:12px;
+      font-weight:700;
+    }
+    .error{
+      color: rgba(255,80,80,.85);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      PAINEL DE INSCRIÇÕES
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      <span>AO VIVO</span>
+    </div>
+
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid">
+      <!-- Card 1 -->
+      <section class="card pink" id="card-sebrae">
+        <div class="head">
+          <div class="title">
+            <span class="badge">🚀</span>
+            SEBRAE DELAS 2026
+          </div>
+        </div>
+
+        <div class="valueRow">
+          <div class="value" id="sebrae-value">--</div>
+          <div class="metaPill" id="sebrae-meta">Meta: -- / --</div>
+        </div>
+
+        <div class="progressLine">
+          <div class="progressTop">
+            <span></span>
+            <span id="sebrae-pct">--%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="sebrae-fill"></div>
+          </div>
+        </div>
+
+        <div class="updated">
+          <div class="clockIcon">🕒</div>
+          <span id="sebrae-updated">Atualizado: --</span>
+        </div>
+
+        <div class="hint" id="sebrae-hint"></div>
+      </section>
+
+      <!-- Card 2 -->
+      <section class="card yellow" id="card-amazonas">
+        <div class="head">
+          <div class="title">
+            <span class="badge">🛢️</span>
+            AMAZONAS ÓLEO, GÁS E ENERGIA
+          </div>
+        </div>
+
+        <div class="valueRow">
+          <div class="value" id="amz-value">--</div>
+          <div class="metaPill" id="amz-meta">Meta: -- / --</div>
+        </div>
+
+        <div class="progressLine">
+          <div class="progressTop">
+            <span></span>
+            <span id="amz-pct">--%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="amz-fill"></div>
+          </div>
+        </div>
+
+        <div class="updated">
+          <div class="clockIcon">🕒</div>
+          <span id="amz-updated">Atualizado: --</span>
+        </div>
+
+        <div class="hint" id="amz-hint"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // 1) COLE A URL DO WEBHOOK N8N AQUI
+    // =========================
+    // Ex.: "https://seu-n8n.com/webhook/inscricoes"
+    const N8N_WEBHOOK_URL = "https://n8n.srv1064194.hstgr.cloud/webhook/Webhook_obter_numero_de_inscritos";
+
+    // =========================
+    // 2) FORMATO ESPERADO DO JSON (exemplo)
+    // =========================
+    // {
+    //   "sebrae":  { "inscritos": 806, "meta": 900,  "updatedAt": "2026-02-05T21:57:24-03:00" },
+    //   "amazonas":{ "inscritos": 524, "meta": 3000, "updatedAt": "2026-02-05T17:13:23-03:00" }
+    // }
+    //
+    // Se você preferir, pode retornar também:
+    // - "updatedAt" já formatado como string (ex.: "05/02/2026 21:57:24")
+    // - ou sem updatedAt (aí a tela mostra horário local do update)
+
+    const $ = (id) => document.getElementById(id);
+
+    function formatNumber(n){
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      return new Intl.NumberFormat("pt-BR").format(Number(n));
+    }
+
+    function calcPct(value, goal){
+      const v = Number(value), g = Number(goal);
+      if (!g || Number.isNaN(v) || Number.isNaN(g)) return 0;
+      return Math.max(0, Math.min(100, (v / g) * 100));
+    }
+
+    function formatUpdatedAt(updatedAt){
+      if (!updatedAt) {
+        const now = new Date();
+        return now.toLocaleString("pt-BR");
+      }
+      // Se vier ISO, formata para pt-BR; se vier string pronta, mantém.
+      const maybeDate = new Date(updatedAt);
+      if (!Number.isNaN(maybeDate.getTime())) return maybeDate.toLocaleString("pt-BR");
+      return String(updatedAt);
+    }
+
+    function updateCard(prefix, data){
+      const value = data?.inscritos ?? null;
+      const meta  = data?.meta ?? null;
+
+      const pct = calcPct(value, meta);
+
+      $(`${prefix}-value`).textContent = formatNumber(value);
+      $(`${prefix}-meta`).textContent = `Meta: ${formatNumber(value)} / ${formatNumber(meta)}`;
+      $(`${prefix}-pct`).textContent = `${pct.toFixed(1)}%`;
+      $(`${prefix}-fill`).style.width = `${pct}%`;
+
+      $(`${prefix}-updated`).textContent = `Atualizado: ${formatUpdatedAt(data?.updatedAt)}`;
+    }
+
+    function setHint(prefix, msg, isError=false){
+      const el = $(`${prefix}-hint`);
+      el.textContent = msg || "";
+      el.classList.toggle("error", !!isError);
+    }
+
+    async function fetchData(){
+      // Se a URL não foi configurada, usa dados demo
+      if (!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes("COLE_AQUI")){
+        const demo = {
+          sebrae:   { inscritos: 806, meta: 900,  updatedAt: "2026-02-05T21:57:24-03:00" },
+          amazonas: { inscritos: 524, meta: 6000, updatedAt: "2026-02-05T17:13:23-03:00" }
+        };
+        updateCard("sebrae", demo.sebrae);
+        updateCard("amz", demo.amazonas);
+        setHint("sebrae", "Modo demo (cole a URL do webhook para dados reais).");
+        setHint("amz", "Modo demo (cole a URL do webhook para dados reais).");
+        return;
+      }
+
+      try{
+        setHint("sebrae", "Atualizando…");
+        setHint("amz", "Atualizando…");
+
+        // Dica: no n8n, habilite CORS se for abrir esse HTML direto no navegador
+        const res = await fetch(N8N_WEBHOOK_URL, { method: "GET" });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const json = await res.json();
+
+        // Aceita chaves: "sebrae" e "amazonas"
+        updateCard("sebrae", json.sebrae);
+        updateCard("amz", json.amazonas);
+
+        setHint("sebrae", "");
+        setHint("amz", "");
+      } catch(err){
+        setHint("sebrae", `Erro ao buscar dados: ${err.message}`, true);
+        setHint("amz", `Erro ao buscar dados: ${err.message}`, true);
+      }
+    }
+
+    // Relógio no topo
+    function tickClock(){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      const ss = String(now.getSeconds()).padStart(2,"0");
+      $("clock").textContent = `${hh}:${mm}:${ss}`;
+    }
+
+    // Intervalos
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    // Atualiza dados ao carregar e a cada X segundos
+    fetchData();
+    const REFRESH_SECONDS = 15; // ajuste como quiser
+    setInterval(fetchData, REFRESH_SECONDS * 1000);
+  </script>
+</body>
+</html>
