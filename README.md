@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Feirão do MEI</title>
+
+  <style>
+    :root {
+      --bg: #e9f7fb;
+      --card: #ffffff;
+      --primary: #19bfd4;
+      --primary-2: #46d5e6;
+      --dark: #083f9a;
+      --dark-2: #0b57d0;
+      --yellow: #ffeb2f;
+      --text: #12324d;
+      --muted: #5b748a;
+      --shadow: 0 10px 30px rgba(8, 63, 154, 0.12);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(70,213,230,.45), transparent 26%),
+        linear-gradient(180deg, #f7fdff 0%, var(--bg) 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 24px));
+      margin: 20px auto 32px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      align-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      border-radius: 32px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      width: 200px;
+      border-radius: 50%;
+    }
+
+    .heroContent h1 {
+      margin: 0;
+      color: #fff;
+    }
+
+    .updated {
+      margin-top: 10px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .value {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--dark);
+    }
+
+    .progressCard {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #0a4ab8, #0b62df);
+      color: #fff;
+      border-radius: 28px;
+      padding: 22px;
+    }
+
+    .progressBar {
+      margin-top: 10px;
+      height: 20px;
+      background: rgba(255,255,255,.2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progressFill {
+      height: 100%;
+      width: 0%;
+      background: var(--yellow);
+      transition: width .5s;
+    }
+
+    /* NOVO layout bottom */
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr;
+      margin-top: 18px;
+    }
+
+    .resumoCard {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+    .pill {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      margin-top: 10px;
+      background: #f3fbfe;
+      border-radius: 12px;
+    }
+.progressTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.progressTitle {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.progressSub {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.progressPercent {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.progressNumbers {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <section class="hero">
+    <img class="logo" src="https://i.imgur.com/A3b8Ph7.png"/>
+    <div class="heroContent">
+      <h1>Feirão do MEI</h1>
+      <div class="updated" id="updateTime">Atualizando...</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Total de Inscritos</div>
+      <div class="value" id="total">0</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Inscritos com CNPJ</div>
+      <div class="value" id="cnpj">0</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Inscritos PF</div>
+      <div class="value" id="pf">0</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Meta</div>
+      <div class="value">650</div>
+    </div>
+  </div>
+
+  <div class="progressCard">
+
+  <div class="progressTop">
+    <div>
+      <div class="progressTitle">Progresso da meta</div>
+      <div class="progressSub">Acompanhe o avanço até 650 inscritos</div>
+    </div>
+
+    <div class="progressPercent" id="percent">
+      0% da meta alcançada
+    </div>
+  </div>
+
+  <div class="progressBar">
+    <div class="progressFill" id="progress"></div>
+  </div>
+
+  <div class="progressNumbers">
+    <span id="countText">0 inscritos</span>
+    <span>Meta: 650</span>
+  </div>
+
+</div>
+
+  <!-- SOMENTE RESUMO -->
+  <section class="bottom">
+    <div class="card resumoCard">
+      <h3>Resumo rápido</h3>
+
+      <div class="pill">
+        <span>Webhook</span>
+        <strong id="status">OK</strong>
+      </div>
+
+      <div class="pill">
+        <span>Atualização</span>
+        <strong>A cada 2 min</strong>
+      </div>
+
+      <div class="pill">
+        <span>Meta restante</span>
+        <strong id="restante">0</strong>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const URL = "https://n8n.srv1064194.hstgr.cloud/webhook/obter_dados_feirao_mei";
+const META = 650;
+
+async function atualizar() {
+  try {
+    const res = await fetch(URL);
+    const data = await res.json();
+
+    const total = data.total_inscritos;
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("cnpj").innerText = data.total_cnpj;
+    document.getElementById("pf").innerText = data.total_pf;
+
+    const percent = Math.min((total / META) * 100, 100);
+
+    document.getElementById("progress").style.width = percent + "%";
+    document.getElementById("percent").innerText =
+  percent.toFixed(1) + "% da meta alcançada";
+
+document.getElementById("countText").innerText =
+  total + " inscritos";
+
+    document.getElementById("restante").innerText = META - total;
+
+    document.getElementById("updateTime").innerText =
+      "Última atualização: " + new Date().toLocaleTimeString();
+
+  } catch (e) {
+    document.getElementById("status").innerText = "Erro";
+  }
+}
+
+atualizar();
+setInterval(atualizar, 120000);
+</script>
+
+</body>
+</html>
